@@ -26,7 +26,7 @@ if [ ! -f config.sh ]; then
 fi
 
 ./config.sh --unattended --replace --url "$REPO_URL" --token "$TOKEN" \
-  --name "$(hostname)-$ETIQUETA" --labels "$ETIQUETA" --work _work
+  --name "oracle-$ARQ-$ETIQUETA" --labels "$ETIQUETA" --work _work
 sudo ./svc.sh install "$(whoami)"
 sudo ./svc.sh start
 sudo ./svc.sh status | head -5
