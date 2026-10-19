@@ -10,7 +10,7 @@ Cada agente es un adaptador en `agentes/<nombre>.sh`; `scripts/agentes.sh` muest
 | `opencode` | `opencode` | ninguna (modelos `opencode/*` gratis) | comandos libres, pruebas, docs, investigación | todo salvo deny; `OPENCODE_FLAGS="--auto"` evita preguntas |
 | `gemini-cli` | `gemini` | Google (gratis) | contexto largo, reemplazo de agy | `auto_edit` → `GEMINI_CLI_APROBACION=yolo` |
 | `qwen` | `qwen` | API key de pago (la cuota gratis terminó en 2026-04) | código en paralelo | `auto` (clasificador) → `QWEN_APROBACION=yolo` |
-| `codex` | `codex` | ChatGPT | segunda opinión, backend difícil, documentos (plugins propios) | `workspace-write`: solo el worktree, sin red |
+| `codex` | `codex` | ChatGPT (pago) | **2.º en inteligencia tras Claude**: tareas complejas, depuración difícil, refactors grandes, revisión de lo delicado, documentos (plugins propios) | `workspace-write`: solo el worktree, sin red |
 
 Alias aceptados: `gemini`/`antigravity` → `agy`, `oc` → `opencode`, `gcli` → `gemini-cli`.
 
@@ -34,9 +34,12 @@ verificación habituales.
 |---|---|---|---|
 | Mecánica: renombrar, docs, pruebas simples | `gemini-3.8-flash-low` | `opencode/big-pickle` | defecto |
 | Un módulo con pruebas, UI normal | `gemini-3.8-flash-medium` | `opencode/big-pickle` | defecto |
-| Difícil: dinero, concurrencia, seguridad | `gemini-3.8-flash-high` | `opencode/glm-5.3-flash-free` | `codex` |
-| Falló dos veces | `claude-sonnet-5-5-high` (cuota de Google) | `opencode/nemotron-3-ultra-free` | otro agente |
-| Último recurso antes de Claude | `claude-opus-5-5-high` | — | — |
+| Difícil: dinero, concurrencia, seguridad, algoritmos, refactor grande | — | — | **`codex`** (`@high`) |
+| Falló dos veces | `claude-sonnet-5-5-high` (cuota de Google) | `opencode/nemotron-3-ultra-free` | `codex` (`@high`) |
+| Último recurso antes de Claude | — | — | `codex` `@xhigh` |
+
+- **Codex**: el modelo se escribe `<modelo>@<esfuerzo>`; `@high` (defecto) y `@xhigh` usan el modelo de
+  `~/.codex/config.toml`. Gasta la cuota de ChatGPT: no lo uses para lo mecánico.
 
 - Modelo al lanzar: 3.er argumento de `lanzar.sh` (`-` = el de por defecto).
 - Al reintentar: `+` sube al siguiente de `ESCALA`, un nombre lo fija, `-` repite. Con un 4.º argumento cambia de

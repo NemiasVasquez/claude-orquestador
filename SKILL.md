@@ -34,13 +34,17 @@ el comando de instalación y el login que imprime (no los corras tú: piden cuen
 
 ## Repartir
 
+Jerarquía de inteligencia: **Claude > Codex (ChatGPT de pago) > agy / OpenCode / Gemini CLI / Qwen**. Codex es el
+agente para lo complejo; lo rutinario va a los gratuitos para no gastar la cuota de ChatGPT.
+
 | Función | Agente (config: `ORQ_*`) |
 |---|---|
+| **Tareas complejas**: algoritmos, concurrencia, seguridad, dinero, depuración difícil, refactors grandes o de varios módulos, backend difícil, diseño de arquitectura a implementar | `codex` (`ORQ_COMPLEJO`) |
 | Implementar código y UI, pruebas de navegador | `agy` (`ORQ_IMPLEMENTA`) |
 | En paralelo: comandos libres, migraciones, pruebas, documentos, docs | `opencode` (`ORQ_PARALELO`) |
-| Revisión cruzada del diff de otro agente (`REV-<ID>`, sin editar código) | `opencode` o `codex` (`ORQ_REVISA`) |
+| Revisión cruzada del diff de otro agente (`REV-<ID>`, sin editar código) | `opencode` (`ORQ_REVISA`); `codex` si es delicado o complejo |
 | Consultas e investigación | `opencode` con Tavily/Context7 (`ORQ_CONSULTA`) |
-| Se acabó la cuota o están ocupados | `gemini-cli`, `qwen`, `codex` |
+| Se acabó la cuota o están ocupados | `gemini-cli`, `qwen` (`codex` solo si es complejo) |
 
 - Claude define **antes** los contratos compartidos (tipos, API, esquema) y nunca deja dos tareas en paralelo tocando
   los mismos archivos. Lo delicado (dinero, auth, seguridad, datos personales, migraciones) lo revisa Claude a fondo.
@@ -63,8 +67,8 @@ el comando de instalación y el login que imprime (no los corras tú: piden cuen
    ```bash
    bash $S/scripts/reintentar.sh <ID> "<error concreto>" [modelo|+|-] [agente]
    ```
-   Escalado: mismo modelo (`-`) una vez → `+` (siguiente modelo de la escala) → otro agente (4.º argumento; sigue
-   en el mismo worktree) → Claude.
+   Escalado: mismo modelo (`-`) una vez → `+` (siguiente modelo de la escala) → `codex` (4.º argumento; sigue
+   en el mismo worktree) → `codex` con `+` (`@xhigh`) → Claude. Si la tarea ya era de Codex: `-` → `+` → Claude.
 5. **Integrar:** `git merge --no-ff agente/<ID>` en la rama base, actualiza el tablero de ESTADO.md y
    `bash $S/scripts/limpiar.sh <ID>`.
 
