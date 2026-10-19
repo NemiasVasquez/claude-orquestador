@@ -1,0 +1,83 @@
+name: Validación del orquestador
+
+# Todo cambio entra por PR a main. Este pipeline debe quedar en verde para integrar.
+# Runner self-hosted en el servidor OCI (/home/opc/actions-runner-orquestador, etiqueta "orquestador").
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pull-requests: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # 1. Detección de secretos: la skill se clona en el equipo de cada persona.
+  gitleaks:
+    name: Gitleaks (Secret Scanning)
+    runs-on: [self-hosted, orquestador]
+    steps:
+      - name: Checkout del repositorio
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Ejecutar Gitleaks
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  # 2. Sintaxis y errores de los scripts (bash y Node).
+  scripts:
+    name: Scripts (bash, ShellCheck, Node)
+    runs-on: [self-hosted, orquestador]
+    steps:
+      - name: Checkout del repositorio
+        uses: actions/checkout@v4
+
+      - name: Sintaxis bash
+        run: |
+          for f in instalar.sh scripts/*.sh agentes/*.sh; do bash -n "$f" || exit 1; done
+
+      # En Docker, igual que Semgrep en ucvmas: no hace falta instalar ShellCheck en el servidor.
+      - name: ShellCheck (solo errores)
+        run: |
+          docker run --rm -v "$PWD:/mnt" -w /mnt koalaman/shellcheck:stable \
+            -s bash -S error instalar.sh scripts/*.sh agentes/*.sh
+
+      - name: Sintaxis Node
+        run: |
+          for f in scripts/*.js; do node --check "$f" || exit 1; done
+
+  # 3. La skill carga: frontmatter válido y cada adaptador define lo que piden los scripts.
+  skill:
+    name: Estructura de la skill
+    runs-on: [self-hosted, orquestador]
+    steps:
+      - name: Checkout del repositorio
+        uses: actions/checkout@v4
+
+      - name: Frontmatter de SKILL.md
+        run: |
+          head -1 SKILL.md | grep -qx -- '---'
+          grep -q '^name: orquestar-agentes$' SKILL.md
+          grep -q '^description: ' SKILL.md
+
+      # Sin -e: los adaptadores hacen BIN=$(command -v <cli>) y el servidor no tiene los CLI instalados.
+      - name: Adaptadores de agentes
+        run: |
+          set +e
+          for f in agentes/*.sh; do
+            ( source "$f"
+              for v in INSTALAR LOGIN FUERTE; do [ -n "${!v}" ] || { echo "$f: falta $v"; exit 1; }; done
+              for fn in agente_lanzar agente_reintentar agente_modelos; do
+                declare -F "$fn" >/dev/null || { echo "$f: falta $fn"; exit 1; }
+              done ) || exit 1
+          done
+          ORQ_CONFIG=/dev/null bash scripts/agentes.sh
