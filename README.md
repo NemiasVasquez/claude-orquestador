@@ -10,7 +10,7 @@ revisar archivos).
 Requisitos: git, Node.js, Python 3 y bash (en Windows, Git Bash).
 
 ```bash
-git clone <url-de-este-repo> ~/.claude/skills/orquestar-agentes
+git clone https://github.com/NemiasVasquez/claude-orquestador.git ~/.claude/skills/orquestar-agentes
 bash ~/.claude/skills/orquestar-agentes/instalar.sh
 # opciones: --agentes "opencode gemini-cli qwen codex"   --sin-programas
 ```
