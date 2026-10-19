@@ -43,7 +43,7 @@ for a in $AGENTES; do
 done
 
 paso "Librerías de documentos (Python)"
-"$PY" -m pip install -q --upgrade pypdf pdfplumber reportlab python-docx openpyxl pandas python-pptx \
+"$PY" -m pip install -q pypdf pdfplumber reportlab python-docx openpyxl pandas python-pptx \
   "markitdown[all]" markitdown-mcp && echo "Listas."
 
 if [ $PROGRAMAS = 1 ]; then
