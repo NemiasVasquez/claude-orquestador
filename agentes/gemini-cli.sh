@@ -3,7 +3,7 @@ BIN=$(command -v gemini)
 MODELO_DEF=${GEMINI_CLI_MODELO:-}
 ESCALA=${GEMINI_CLI_ESCALA:-}
 INSTALAR="npm i -g @google/gemini-cli"
-LOGIN="abre 'gemini' en la carpeta que contiene tus repos: 'Login with Google' y 'Trust parent folder'"
+LOGIN="abre 'gemini' en la carpeta de tus repos: Login with Google o una API key de Google AI Studio, y 'Trust parent folder'"
 FUERTE="alternativa a agy cuando se acaba su cuota; contexto largo"
 
 # En una carpeta que no es de confianza, Gemini CLI baja la aprobación a "default" y sin interfaz no avanza.
