@@ -9,7 +9,7 @@ Cada agente es un adaptador en `agentes/<nombre>.sh`; `scripts/agentes.sh` muest
 | `agy` | Antigravity CLI | Google | código, UI, navegador | edita; comandos solo exactos de su lista → `AGY_FLAGS="--dangerously-skip-permissions"` (ignora su deny) |
 | `opencode` | `opencode` | ninguna (modelos `opencode/*` gratis) | comandos libres, pruebas, docs, investigación | todo salvo deny; `OPENCODE_FLAGS="--auto"` evita preguntas |
 | `gemini-cli` | `gemini` | Google (gratis) | contexto largo, reemplazo de agy | `auto_edit` → `GEMINI_CLI_APROBACION=yolo` |
-| `qwen` | `qwen` | Qwen OAuth (gratis) | código en paralelo | `auto` (clasificador) → `QWEN_APROBACION=yolo` |
+| `qwen` | `qwen` | API key de pago (la cuota gratis terminó en 2026-04) | código en paralelo | `auto` (clasificador) → `QWEN_APROBACION=yolo` |
 | `codex` | `codex` | ChatGPT | segunda opinión, backend difícil, documentos (plugins propios) | `workspace-write`: solo el worktree, sin red |
 
 Alias aceptados: `gemini`/`antigravity` → `agy`, `oc` → `opencode`, `gcli` → `gemini-cli`.

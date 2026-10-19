@@ -9,7 +9,7 @@
 # y crea tu config personal. Respalda cada archivo que toca como *.bak-orq. Se puede correr varias veces.
 set -u
 DIR_SKILL=$(cd "$(dirname "$0")" && pwd)
-AGENTES="opencode gemini-cli qwen"
+AGENTES="opencode gemini-cli"
 PROGRAMAS=1
 while [ $# -gt 0 ]; do
   case $1 in
@@ -81,7 +81,7 @@ cat <<'EOF'
 Falta solo iniciar sesión una vez en cada CLI que vayas a usar (en tu terminal):
   opencode auth login   (opcional: los modelos opencode/* gratis no lo piden)
   gemini                (en la carpeta que contiene tus repos: Login with Google + Trust parent folder)
-  qwen                  (Qwen OAuth)
+  qwen                  (opcional y de pago: QwenCloud o Third-party con API key)
   codex login           (cuenta de ChatGPT)
   agy                   (cuenta de Google)
 Después, en Claude Code: /orquestar-agentes <lo que quieres hacer>

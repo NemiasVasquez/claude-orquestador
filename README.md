@@ -27,7 +27,7 @@ El instalador hace esto:
 
 Respalda cada archivo que toca como `*.bak-orq` y se puede correr varias veces.
 
-Después inicia sesión una vez en cada CLI (`gemini`, `qwen`, `codex login`, `agy`). OpenCode con modelos
+Después inicia sesión una vez en cada CLI (`gemini`, `codex login`, `agy`; `qwen` solo con API key de pago). OpenCode con modelos
 `opencode/*` no lo pide.
 
 ## Usar
