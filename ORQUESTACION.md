@@ -93,3 +93,7 @@ Desde el repo. En `..` quedan `wt-<repo>-<ID>/` y `<repo>-<ID>.{jsonl,meta,setup
 La skill es un repo git: cada persona la clona en `~/.claude/skills/orquestar-agentes` y corre `bash instalar.sh`
 (ver README.md). Lo personal (permisos, modelos, agente preferido) vive en `~/.config/orquestar-agentes/config`, no en
 el repo. Para actualizar: `git pull` y volver a correr `instalar.sh`.
+
+Si un repo trae su propia `.claude/skills/orquestar-agentes` (versión vieja por proyecto), choca con esta por el
+nombre: bórrala o renómbrala y deja lo propio del proyecto (instalación, verificación) en `docs/agentes/ESTADO.md`
+y `AGENTS.md`.

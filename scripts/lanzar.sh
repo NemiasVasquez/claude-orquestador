@@ -12,6 +12,11 @@ MODELO=${MODELO:-$MODELO_DEF}
 BASE=${4:-$(git -C "$RAIZ" rev-parse --abbrev-ref HEAD)}
 
 [ -f "$RAIZ/$TAREA" ] || { echo "Falta $TAREA"; exit 2; }
+# La tarea va en un commit de la rama base: si queda sin seguimiento, el merge de agente/<ID> choca con ella.
+if [ "$BASE" = "$(git -C "$RAIZ" rev-parse --abbrev-ref HEAD)" ] && ! git -C "$RAIZ" ls-files --error-unmatch "$TAREA" >/dev/null 2>&1; then
+  git -C "$RAIZ" add "$TAREA" && git -C "$RAIZ" commit -q -m "docs(agentes): tarea $ID" -- "$TAREA" \
+    && echo "Commit de $TAREA en $BASE." || echo "AVISO: no se pudo hacer commit de $TAREA; hazlo antes de integrar."
+fi
 
 if [ ! -d "$WT" ]; then
   git -C "$RAIZ" worktree add -q "$WT" -b "agente/$ID" "$BASE" || exit 2

@@ -9,7 +9,9 @@ Claude **no hace** lo que un agente pueda hacer: decide, reparte, valida e integ
 comunican por archivos, no por chat. Referencia (agentes, modelos, permisos, problemas): [ORQUESTACION.md](ORQUESTACION.md),
 solo la sección que necesites.
 
-`S=~/.claude/skills/orquestar-agentes`. Antes del primer reparto de la sesión corre `bash $S/scripts/agentes.sh`:
+`$S` = `~/.claude/skills/orquestar-agentes`. Corre los scripts con la herramienta **Bash** (en Windows es Git Bash;
+desde PowerShell `~` no se expande y `bash` puede ser el de WSL) y escribe la ruta completa en cada llamada: las
+variables no pasan de una llamada a otra. Antes del primer reparto de la sesión corre `bash $S/scripts/agentes.sh`:
 dice qué agentes están instalados, sus modelos y para qué es fuerte cada uno. Si falta alguno, dile al usuario
 el comando de instalación y el login que imprime (no los corras tú: piden cuenta).
 
@@ -52,7 +54,7 @@ el comando de instalación y el login que imprime (no los corras tú: piden cuen
    ```bash
    bash $S/scripts/lanzar.sh <agente> <ID> [modelo|-] [rama-base]
    ```
-   Crea `../wt-<repo>-<ID>`, bloquea el push, instala dependencias (`SETUP="..."` lo cambia), lanza, hace commit y
+   Hace commit de la tarea en la rama base si no lo tiene, crea `../wt-<repo>-<ID>`, bloquea el push, instala dependencias (`SETUP="..."` lo cambia), lanza, hace commit y
    resume. Una llamada por tarea; varias a la vez si son independientes.
 3. **Validar** con el resumen (no abras el registro): reporte, commits y `diff --stat` dentro de lo permitido,
    denegadas, **ALERTA** de push, cambios sin commit. Corre **tú** la verificación en el worktree. Documentos:

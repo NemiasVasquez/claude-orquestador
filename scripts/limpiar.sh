@@ -10,8 +10,9 @@ git -C "$RAIZ" worktree remove --force "$WT" 2>/dev/null
 git -C "$RAIZ" worktree prune
 git -C "$RAIZ" branch -D "agente/$ID" 2>/dev/null
 # En Windows, git no borra los node_modules de pnpm (enlaces): se borran con rmdir.
+# MSYS2_ARG_CONV_EXCL deja pasar /s /q tal cual y la ruta va entre comillas (puede tener espacios).
 if [ -d "$WT" ]; then
-  if command -v cygpath >/dev/null; then cmd //c "rmdir /s /q $(cygpath -w "$WT")"; else rm -rf "$WT"; fi
+  if command -v cygpath >/dev/null; then MSYS2_ARG_CONV_EXCL='*' cmd /c rmdir /s /q "$(cygpath -w "$WT")"; else rm -rf "$WT"; fi
 fi
 [ -d "$WT" ] && echo "AVISO: $WT sigue ahí (¿una terminal o editor abierto dentro?). Bórrala a mano."
 rm -f "$LOG.jsonl" "$LOG.meta" "$LOG.setup.log"
