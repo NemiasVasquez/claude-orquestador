@@ -1,0 +1,31 @@
+# Configuración personal de orquestar-agentes.
+# Cópiala a ~/.config/orquestar-agentes/config (instalar.sh lo hace) y ajústala. Es bash: VARIABLE="valor".
+# Todo es opcional: sin este archivo se usan los valores por defecto de agentes/*.sh.
+
+# ── Agente preferido para cada función (lo lee Claude al repartir) ─────────────────
+ORQ_IMPLEMENTA="agy"          # código y UI
+ORQ_PARALELO="opencode"       # segunda línea: comandos libres, pruebas, docs, investigación
+ORQ_REVISA="opencode"         # revisión cruzada
+ORQ_CONSULTA="opencode"       # preguntas sin repo (consultar.sh)
+
+# ── Modelos por defecto y escala para "+" (de menor a mayor) ──────────────────────
+# AGY_MODELO="gemini-3.8-flash-medium"
+# AGY_ESCALA="gemini-3.8-flash-low gemini-3.8-flash-medium gemini-3.8-flash-high claude-sonnet-5-5-high claude-opus-5-5-high"
+# OPENCODE_MODELO="opencode/big-pickle"
+# OPENCODE_ESCALA="opencode/big-pickle opencode/deepseek-v4.1-flash-free opencode/glm-5.3-flash-free"
+# GEMINI_CLI_MODELO=""        # vacío = el del CLI
+# GEMINI_CLI_ESCALA=""
+# QWEN_MODELO=""
+# QWEN_ESCALA=""
+# CODEX_MODELO=""             # vacío = el de ~/.codex/config.toml
+# CODEX_ESCALA=""
+
+# ── Permisos (decisión de cada persona) ───────────────────────────────────────────
+# Por defecto los agentes editan archivos pero piden permiso para comandos, y en modo
+# sin interfaz eso los corta. Para que corran comandos sin preguntar, descomenta lo tuyo.
+# Los worktrees siempre tienen el push bloqueado y Claude revisa el diff antes de integrar.
+# AGY_FLAGS="--dangerously-skip-permissions"   # OJO: agy ignora entonces su lista deny
+# OPENCODE_FLAGS="--auto"                      # aprueba todo lo que no esté en su lista deny
+# GEMINI_CLI_APROBACION="yolo"                 # auto_edit (defecto) | yolo
+# QWEN_APROBACION="auto"                       # auto (defecto: un clasificador decide) | yolo
+# CODEX_SANDBOX="workspace-write"              # workspace-write (defecto, sin red) | danger-full-access
