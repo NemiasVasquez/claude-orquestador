@@ -49,11 +49,24 @@ Tu config personal está en `~/.config/orquestar-agentes/config` (ver `config.ej
 
 Para sumar otro agente, crea `agentes/<nombre>.sh` (ORQUESTACION.md § 1).
 
+## Más skills del equipo
+
+El repo también trae otras skills, en `skills/`, que siguen la misma lógica (Claude decide y valida, los agentes
+trabajan). `instalar.sh` las copia a `~/.claude/skills/`. Detalle y cómo agregar una nueva: [skills/README.md](skills/README.md).
+
+| Skill | Para qué |
+|---|---|
+| `disenar-posts` | Posts y anuncios para Facebook e Instagram, del pin de Pinterest a Figma y al PNG con caption |
+
+Para crear otra: `bash scripts/nueva-skill.sh <nombre> "<cuándo usarla>"` y luego `bash scripts/instalar-skills.sh`.
+
 ## Estructura
 
 | Ruta | Qué es |
 |---|---|
 | `SKILL.md` | Lo que lee Claude |
+| `skills/<nombre>/` | Otras skills del equipo (se instalan con `scripts/instalar-skills.sh`) |
+| `plantillas/skill/` | Esqueleto de una skill nueva (`scripts/nueva-skill.sh`) |
 | `ORQUESTACION.md` | Referencia: agentes, modelos, scripts, tipos de tarea, documentos, problemas |
 | `agentes/*.sh` | Un adaptador por CLI |
 | `scripts/` | `agentes`, `lanzar`, `resumen`, `reintentar`, `limpiar`, `consultar` y la configuración |
