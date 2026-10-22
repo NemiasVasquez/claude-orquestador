@@ -14,11 +14,11 @@ codex_opciones() {  # <modelo@esfuerzo> → -m y -c para codex
   echo ${m:+-m "$m"} -c "model_reasoning_effort=\"$e\""
 }
 agente_lanzar() {
-  codex exec --json --skip-git-repo-check $(codex_opciones "$2") --sandbox "${CODEX_SANDBOX:-workspace-write}" "$1"
+  codex exec --json --skip-git-repo-check $(codex_opciones "$2") --sandbox "${CODEX_SANDBOX:-workspace-write}" "$1" < /dev/null  # sin stdin: si no, Codex espera entrada y se cuelga
 }
 agente_reintentar() {  # sin sesión de esta tarea, una nueva (--last podría retomar otra conversación de Codex)
   [ -n "$3" ] || { agente_lanzar "$1" "$2"; return; }
   codex exec resume --json --skip-git-repo-check $(codex_opciones "$2") -c "sandbox_mode=\"${CODEX_SANDBOX:-workspace-write}\"" \
-    "$3" "$1"
+    "$3" "$1" < /dev/null
 }
 agente_modelos() { echo "Codex: <modelo>@<esfuerzo> (low|medium|high|xhigh); sin modelo usa el de ~/.codex/config.toml. Ej.: @xhigh"; }

@@ -65,12 +65,42 @@ commit_pendiente() {
     && echo "Commit automático de lo pendiente." || echo "AVISO: falló el commit automático (¿hooks?)."
 }
 
+# Vigilante sin tokens: cada ORQ_VIGILAR_SEG (300 s) mira si el registro del agente creció.
+# Si no crece en ORQ_VIGILAR_CICLOS revisiones seguidas (2 → 10 min), o el registro muestra un
+# bloqueo conocido (espera de stdin, sin créditos/cuota), corta el agente y deja ALERTA.
+detener_agente() {  # <pid de bash>
+  local wp
+  wp=$(cat "/proc/$1/winpid" 2>/dev/null) && taskkill //F //T //PID "$wp" >/dev/null 2>&1
+  pkill -P "$1" 2>/dev/null; kill "$1" 2>/dev/null
+}
+vigilar_agente() {  # <pid> <registro>
+  local pid=$1 log=$2 seg=${ORQ_VIGILAR_SEG:-300} ciclos=${ORQ_VIGILAR_CICLOS:-2}
+  local previo=-1 quietos=0 t=0 tam motivo=""
+  while kill -0 "$pid" 2>/dev/null; do
+    sleep 15; t=$((t + 15))
+    if grep -qiE "Reading additional input from stdin|out of credits|quota exceeded|insufficient_quota|usage limit" "$log" 2>/dev/null; then
+      motivo="bloqueo conocido: $(grep -oiE "Reading additional input from stdin|out of credits|quota exceeded|insufficient_quota|usage limit" "$log" | head -1)"
+    elif [ $t -ge "$seg" ]; then
+      t=0; tam=$(wc -c < "$log" 2>/dev/null || echo 0)
+      if [ "$tam" -eq "$previo" ]; then quietos=$((quietos + 1)); else quietos=0; fi
+      previo=$tam
+      [ $quietos -ge "$ciclos" ] && motivo="sin actividad en el registro por $((seg * ciclos)) s"
+    fi
+    if [ -n "$motivo" ]; then
+      echo "ALERTA: agente colgado ($motivo). Detenido por el vigilante." | tee -a "$log"
+      detener_agente "$pid"; return 1
+    fi
+  done
+}
+
 ejecutar_agente() {  # <lanzar|nuevo|reintentar> <prompt> <modelo> [sesión] → salida a "$LOG.jsonl"
-  local inicio=$SECONDS        # nuevo = sesión nueva (otro agente) agregada al mismo registro
+  local inicio=$SECONDS pid estado        # nuevo = sesión nueva (otro agente) agregada al mismo registro
   case $1 in
-    lanzar) agente_lanzar "$2" "$3" > "$LOG.jsonl" 2>&1 ;;
-    nuevo) agente_lanzar "$2" "$3" >> "$LOG.jsonl" 2>&1 ;;
-    *) agente_reintentar "$2" "$3" "${4:-}" >> "$LOG.jsonl" 2>&1 ;;
+    lanzar) agente_lanzar "$2" "$3" > "$LOG.jsonl" 2>&1 & ;;
+    nuevo) agente_lanzar "$2" "$3" >> "$LOG.jsonl" 2>&1 & ;;
+    *) agente_reintentar "$2" "$3" "${4:-}" >> "$LOG.jsonl" 2>&1 & ;;
   esac
-  echo "Código de salida: $? · $(( (SECONDS - inicio) / 60 )) min"
+  pid=$!
+  if vigilar_agente "$pid" "$LOG.jsonl"; then wait "$pid"; estado=$?; else wait "$pid" 2>/dev/null; estado=124; fi
+  echo "Código de salida: $estado · $(( (SECONDS - inicio) / 60 )) min"
 }
