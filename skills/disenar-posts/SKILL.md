@@ -46,6 +46,8 @@ de él salen todas las decisiones y la validación.
 | 5. Armado en Figma | Claude (MCP Figma) | Carga las skills `figma-use` y `figma-generate-design`. Sube los assets con `upload_assets` y arma el marco con las recetas de `referencias/figma-recetas.md`. Revisa con `get_screenshot` |
 | 6. Export y registro | Claude y agente | Exporta el PNG con `get_screenshot` a tamaño real. El agente redacta los captions con UTM. Registra la pieza en el archivo de publicaciones del proyecto |
 
+Para **video publicitario** (TikTok, Reels o Stories), el flujo es el mismo, con escenas animadas en Figma Motion, `export_video` y montaje con ffmpeg: sigue `referencias/video.md`.
+
 Para **anuncios de Meta**, sigue además `referencias/anuncios-meta.md`: formatos por ubicación, zona segura, texto en
 la imagen, estructura de campaña y qué necesita aprobación del usuario.
 
@@ -65,5 +67,6 @@ la imagen, estructura de campaña y qué necesita aprobación del usuario.
 - `referencias/figma-recetas.md`: código para `use_figma` (titular condensado, componentes de pie y de slab o marco,
   instancias con imagen, export).
 - `referencias/anuncios-meta.md`: piezas para Meta Ads y lo que se decide con el usuario.
+- `referencias/video.md`: video publicitario (guion, escenas animadas en Figma, export_video, ffmpeg y zona segura de TikTok).
 - `plantillas/linea-grafica.md` y `plantillas/tarea-referencias.md`.
 - `scripts/hoja-contacto.py` y `scripts/recolor-fondo.py` (correr con `python -I`).
