@@ -1,6 +1,6 @@
 # Línea gráfica — <Proyecto>
 
-> Lo lee la skill `disenar-posts` antes de diseñar. Mantenlo corto y actualizado.
+> Lo leen las skills `disenar-posts` y `disenar-videos` antes de diseñar. Mantenlo corto y actualizado. Para video, agrega al final la sección "Movimiento (video)" de `disenar-videos/plantillas/movimiento.md`.
 
 ## Marca
 - **Colores:** fondo `#______`, texto `#______`, acento `#______`, secundario `#______`.

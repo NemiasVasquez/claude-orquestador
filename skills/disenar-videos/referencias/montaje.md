@@ -1,4 +1,4 @@
-# Video publicitario: la misma lógica que un post, con tiempo
+# Montaje de video: herramientas, recetas y comandos
 
 Se aplica a anuncios y videos verticales de 15-25 s para TikTok, Reels y Stories. Es el mismo flujo que un post:
 1. referencias;

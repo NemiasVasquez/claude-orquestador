@@ -7,6 +7,7 @@ Cada carpeta de `skills/` es una skill de Claude Code. `instalar.sh` (o `scripts
 | Skill | Para qué |
 |---|---|
 | [`disenar-posts`](disenar-posts/SKILL.md) | Posts y anuncios para Facebook e Instagram: pin de Pinterest → línea gráfica → Figma → PNG + caption |
+| [`disenar-videos`](disenar-videos/SKILL.md) | Videos publicitarios verticales (TikTok, Reels, Stories): referencias → guion → escenas animadas en Figma Motion → ffmpeg → MP4 + copy, siempre con la línea gráfica |
 
 ## Agregar una skill
 
