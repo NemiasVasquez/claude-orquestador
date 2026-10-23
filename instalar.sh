@@ -68,6 +68,9 @@ if [ -f "$CONFIG" ]; then echo "Ya existe: $CONFIG"
 else mkdir -p "$(dirname "$CONFIG")" && cp "$DIR_SKILL/config.ejemplo" "$CONFIG" && echo "Creada: $CONFIG (revisa la sección de permisos)"; fi
 command -v setx >/dev/null && setx PYTHONUTF8 1 >/dev/null 2>&1
 
+paso "Skills del equipo (skills/*)"
+bash "$DIR_SKILL/scripts/instalar-skills.sh"
+
 paso "Claude usa la skill en todo proyecto"
 MD=$HOME/.claude/CLAUDE.md
 LINEA="- Para cualquier tarea o consulta que se pueda delegar, usa la skill orquestar-agentes: Claude reparte el trabajo entre los agentes del CLI y valida; no implementa lo que un agente pueda hacer."

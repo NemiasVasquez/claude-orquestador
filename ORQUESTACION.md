@@ -100,3 +100,10 @@ el repo. Para actualizar: `git pull` y volver a correr `instalar.sh`.
 Si un repo trae su propia `.claude/skills/orquestar-agentes` (versión vieja por proyecto), choca con esta por el
 nombre: bórrala o renómbrala y deja lo propio del proyecto (instalación, verificación) en `docs/agentes/ESTADO.md`
 y `AGENTS.md`.
+
+## 8. Más skills
+
+`skills/<nombre>/` guarda otras skills del equipo con la misma lógica de reparto. `scripts/instalar-skills.sh` las copia
+a `~/.claude/skills/` y marca cada copia con `.origen-orquestador`, para no pisar skills ajenas. Una skill nueva se crea
+con `scripts/nueva-skill.sh`, según la convención de `skills/README.md`: es genérica y lo propio del proyecto va en el
+repo del proyecto. Su `SKILL.md` dice qué pasos delega en agentes y cuáles hace Claude.
