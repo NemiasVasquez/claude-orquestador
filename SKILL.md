@@ -62,7 +62,7 @@ agente para lo complejo; lo rutinario va a los gratuitos para no gastar la cuota
    resume. Una llamada por tarea; varias a la vez si son independientes.
    **Vigilante (sin tokens):** `lanzar.sh` y `reintentar.sh` revisan en bash cada 5 min (`ORQ_VIGILAR_SEG=300`) que el
    registro del agente crezca. Si no crece en 2 revisiones (`ORQ_VIGILAR_CICLOS=2`, 10 min) o aparece un bloqueo
-   conocido (espera de stdin, sin créditos o cuota), detienen el agente, imprimen `ALERTA: agente colgado (...)` y
+   conocido (sin créditos o cuota), detienen el agente, imprimen `ALERTA: agente colgado (...)` y
    salen con código 124. No hagas polling tú: al ver la ALERTA, reintenta con otro modelo/agente según el escalado.
 3. **Validar** con el resumen (no abras el registro): reporte, commits y `diff --stat` dentro de lo permitido,
    denegadas, **ALERTA** de push, cambios sin commit. Corre **tú** la verificación en el worktree. Documentos:

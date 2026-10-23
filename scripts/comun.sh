@@ -67,19 +67,25 @@ commit_pendiente() {
 
 # Vigilante sin tokens: cada ORQ_VIGILAR_SEG (300 s) mira si el registro del agente creció.
 # Si no crece en ORQ_VIGILAR_CICLOS revisiones seguidas (2 → 10 min), o el registro muestra un
-# bloqueo conocido (espera de stdin, sin créditos/cuota), corta el agente y deja ALERTA.
-detener_agente() {  # <pid de bash>
+# bloqueo conocido (sin créditos o cuota), corta el agente y deja ALERTA.
+procesos_de_tarea() {  # <ID> → PIDs de Windows cuyo comando menciona la tarea (todo prompt de agente la cita)
+  powershell.exe -NoProfile -Command "Get-CimInstance Win32_Process | Where-Object { \$_.CommandLine -match 'tareas/$1\.md' -and \$_.Name -ne 'powershell.exe' } | ForEach-Object { \$_.ProcessId }" 2>/dev/null | tr -d '\r'
+}
+detener_agente() {  # <pid de bash> [ID]: en Windows el árbol de bash no incluye al exe del agente; se busca por la tarea
   local wp
+  if [ -n "${2:-}" ] && command -v powershell.exe >/dev/null; then
+    for wp in $(procesos_de_tarea "$2"); do taskkill //F //T //PID "$wp" >/dev/null 2>&1; done
+  fi
   wp=$(cat "/proc/$1/winpid" 2>/dev/null) && taskkill //F //T //PID "$wp" >/dev/null 2>&1
   pkill -P "$1" 2>/dev/null; kill "$1" 2>/dev/null
 }
-vigilar_agente() {  # <pid> <registro>
-  local pid=$1 log=$2 seg=${ORQ_VIGILAR_SEG:-300} ciclos=${ORQ_VIGILAR_CICLOS:-2}
+vigilar_agente() {  # <pid> <registro> [bytes previos: solo se revisa lo que escribe este intento]
+  local pid=$1 log=$2 desde=$(( ${3:-0} + 1 )) seg=${ORQ_VIGILAR_SEG:-300} ciclos=${ORQ_VIGILAR_CICLOS:-2}
   local previo=-1 quietos=0 t=0 tam motivo=""
   while kill -0 "$pid" 2>/dev/null; do
     sleep 15; t=$((t + 15))
-    if grep -qiE "Reading additional input from stdin|out of credits|quota exceeded|insufficient_quota|usage limit" "$log" 2>/dev/null; then
-      motivo="bloqueo conocido: $(grep -oiE "Reading additional input from stdin|out of credits|quota exceeded|insufficient_quota|usage limit" "$log" | head -1)"
+    if tail -c +"$desde" "$log" 2>/dev/null | grep -qiE "out of credits|quota exceeded|quota reached|RESOURCE_EXHAUSTED|insufficient_quota|usage limit"; then
+      motivo="bloqueo conocido: $(tail -c +"$desde" "$log" | grep -oiE "out of credits|quota exceeded|quota reached|RESOURCE_EXHAUSTED|insufficient_quota|usage limit" | head -1)"
     elif [ $t -ge "$seg" ]; then
       t=0; tam=$(wc -c < "$log" 2>/dev/null || echo 0)
       if [ "$tam" -eq "$previo" ]; then quietos=$((quietos + 1)); else quietos=0; fi
@@ -88,19 +94,20 @@ vigilar_agente() {  # <pid> <registro>
     fi
     if [ -n "$motivo" ]; then
       echo "ALERTA: agente colgado ($motivo). Detenido por el vigilante." | tee -a "$log"
-      detener_agente "$pid"; return 1
+      detener_agente "$pid" "${ID:-}"; return 1
     fi
   done
 }
 
 ejecutar_agente() {  # <lanzar|nuevo|reintentar> <prompt> <modelo> [sesión] → salida a "$LOG.jsonl"
-  local inicio=$SECONDS pid estado        # nuevo = sesión nueva (otro agente) agregada al mismo registro
+  local inicio=$SECONDS pid estado previo=0        # nuevo = sesión nueva (otro agente) agregada al mismo registro
+  if [ "$1" != lanzar ] && [ -f "$LOG.jsonl" ]; then previo=$(wc -c < "$LOG.jsonl"); fi
   case $1 in
     lanzar) agente_lanzar "$2" "$3" > "$LOG.jsonl" 2>&1 & ;;
     nuevo) agente_lanzar "$2" "$3" >> "$LOG.jsonl" 2>&1 & ;;
     *) agente_reintentar "$2" "$3" "${4:-}" >> "$LOG.jsonl" 2>&1 & ;;
   esac
   pid=$!
-  if vigilar_agente "$pid" "$LOG.jsonl"; then wait "$pid"; estado=$?; else wait "$pid" 2>/dev/null; estado=124; fi
+  if vigilar_agente "$pid" "$LOG.jsonl" "$previo"; then wait "$pid"; estado=$?; else wait "$pid" 2>/dev/null; estado=124; fi
   echo "Código de salida: $estado · $(( (SECONDS - inicio) / 60 )) min"
 }
