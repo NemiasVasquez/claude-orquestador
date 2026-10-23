@@ -34,13 +34,17 @@ el comando de instalación y el login que imprime (no los corras tú: piden cuen
 
 ## Repartir
 
+Jerarquía de inteligencia: **Claude > Codex (ChatGPT de pago) > agy / OpenCode / Gemini CLI / Qwen**. Codex es el
+agente para lo complejo; lo rutinario va a los gratuitos para no gastar la cuota de ChatGPT.
+
 | Función | Agente (config: `ORQ_*`) |
 |---|---|
+| **Tareas complejas**: algoritmos, concurrencia, seguridad, dinero, depuración difícil, refactors grandes o de varios módulos, backend difícil, diseño de arquitectura a implementar | `codex` (`ORQ_COMPLEJO`) |
 | Implementar código y UI, pruebas de navegador | `agy` (`ORQ_IMPLEMENTA`) |
 | En paralelo: comandos libres, migraciones, pruebas, documentos, docs | `opencode` (`ORQ_PARALELO`) |
-| Revisión cruzada del diff de otro agente (`REV-<ID>`, sin editar código) | `opencode` o `codex` (`ORQ_REVISA`) |
+| Revisión cruzada del diff de otro agente (`REV-<ID>`, sin editar código) | `opencode` (`ORQ_REVISA`); `codex` si es delicado o complejo |
 | Consultas e investigación | `opencode` con Tavily/Context7 (`ORQ_CONSULTA`) |
-| Se acabó la cuota o están ocupados | `gemini-cli`, `qwen`, `codex` |
+| Se acabó la cuota o están ocupados | `gemini-cli`, `qwen` (`codex` solo si es complejo) |
 
 - Claude define **antes** los contratos compartidos (tipos, API, esquema) y nunca deja dos tareas en paralelo tocando
   los mismos archivos. Lo delicado (dinero, auth, seguridad, datos personales, migraciones) lo revisa Claude a fondo.
@@ -56,6 +60,10 @@ el comando de instalación y el login que imprime (no los corras tú: piden cuen
    ```
    Hace commit de la tarea en la rama base si no lo tiene, crea `../wt-<repo>-<ID>`, bloquea el push, instala dependencias (`SETUP="..."` lo cambia), lanza, hace commit y
    resume. Una llamada por tarea; varias a la vez si son independientes.
+   **Vigilante (sin tokens):** `lanzar.sh` y `reintentar.sh` revisan en bash cada 5 min (`ORQ_VIGILAR_SEG=300`) que el
+   registro del agente crezca. Si no crece en 2 revisiones (`ORQ_VIGILAR_CICLOS=2`, 10 min) o aparece un bloqueo
+   conocido (espera de stdin, sin créditos o cuota), detienen el agente, imprimen `ALERTA: agente colgado (...)` y
+   salen con código 124. No hagas polling tú: al ver la ALERTA, reintenta con otro modelo/agente según el escalado.
 3. **Validar** con el resumen (no abras el registro): reporte, commits y `diff --stat` dentro de lo permitido,
    denegadas, **ALERTA** de push, cambios sin commit. Corre **tú** la verificación en el worktree. Documentos:
    ORQUESTACION.md § 5.
@@ -63,10 +71,30 @@ el comando de instalación y el login que imprime (no los corras tú: piden cuen
    ```bash
    bash $S/scripts/reintentar.sh <ID> "<error concreto>" [modelo|+|-] [agente]
    ```
-   Escalado: mismo modelo (`-`) una vez → `+` (siguiente modelo de la escala) → otro agente (4.º argumento; sigue
-   en el mismo worktree) → Claude.
+   Escalado: mismo modelo (`-`) una vez → `+` (siguiente modelo de la escala) → `codex` (4.º argumento; sigue
+   en el mismo worktree) → `codex` con `+` (`@xhigh`) → Claude. Si la tarea ya era de Codex: `-` → `+` → Claude.
 5. **Integrar:** `git merge --no-ff agente/<ID>` en la rama base, actualiza el tablero de ESTADO.md y
    `bash $S/scripts/limpiar.sh <ID>`.
+
+## Esperas externas (CI, deploy, servidores)
+
+Nunca esperes algo sin plazo: lo que se espera puede no ocurrir nunca (un disparador `workflow_run` que no se activa,
+un runner ocupado, un deploy que no arranca). Corre la espera en segundo plano con los scripts, que no gastan tokens:
+
+```bash
+bash $S/scripts/esperar-gh.sh <owner/repo> <workflow.yml> <sha> [plazo_aparecer=600] [plazo_total=1800]
+bash $S/scripts/esperar.sh "<qué se espera>" <plazo_seg> <comando de chequeo...>
+```
+
+- `esperar-gh.sh` falla con **3** si la ejecución no aparece (el disparador no funcionó; avisa si el workflow tiene
+  `workflow_dispatch`), con **124** si no termina a tiempo y con **1** si termina en fallo.
+- Tras un merge que debe desplegar: espera el CI **y** el workflow de deploy. Si el deploy no aparece, no lo des por
+  hecho: dile al usuario, lánzalo a mano con `gh workflow run` si está autorizado y deja anotado que el disparador
+  automático falla.
+- Al terminar un deploy, verifica el resultado en el destino (p. ej. `esperar.sh` con un chequeo del commit en el
+  servidor o del HTTP de la app), no solo el verde del workflow.
+- Si una espera ya en curso no va a servir (filtro mal escrito, plazo absurdo), córtala y lanza otra; no confíes en
+  un vigilante que no avisa.
 
 ## Entre tareas
 

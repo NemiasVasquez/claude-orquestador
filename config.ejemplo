@@ -5,7 +5,8 @@
 # ── Agente preferido para cada función (lo lee Claude al repartir) ─────────────────
 ORQ_IMPLEMENTA="agy"          # código y UI
 ORQ_PARALELO="opencode"       # segunda línea: comandos libres, pruebas, docs, investigación
-ORQ_REVISA="opencode"         # revisión cruzada
+ORQ_COMPLEJO="codex"          # tareas complejas (2.º en inteligencia tras Claude)
+ORQ_REVISA="opencode"         # revisión cruzada (codex si es delicado)
 ORQ_CONSULTA="opencode"       # preguntas sin repo (consultar.sh)
 
 # ── Modelos por defecto y escala para "+" (de menor a mayor) ──────────────────────
@@ -17,8 +18,8 @@ ORQ_CONSULTA="opencode"       # preguntas sin repo (consultar.sh)
 # GEMINI_CLI_ESCALA=""
 # QWEN_MODELO=""
 # QWEN_ESCALA=""
-# CODEX_MODELO=""             # vacío = el de ~/.codex/config.toml
-# CODEX_ESCALA=""
+# CODEX_MODELO="@high"         # <modelo>@<esfuerzo>; sin modelo = el de ~/.codex/config.toml
+# CODEX_ESCALA="@high @xhigh"
 
 # ── Permisos (decisión de cada persona) ───────────────────────────────────────────
 # Por defecto los agentes editan archivos pero piden permiso para comandos, y en modo

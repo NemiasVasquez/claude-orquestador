@@ -72,3 +72,7 @@ Para crear otra: `bash scripts/nueva-skill.sh <nombre> "<cuándo usarla>"` y lue
 | `scripts/` | `agentes`, `lanzar`, `resumen`, `reintentar`, `limpiar`, `consultar` y la configuración |
 | `plantillas/` | `AGENTS.md`, `ESTADO.md` y tarea para cada repo |
 | `guias/documentos.md` | Guía de PDF/Word/Excel/PowerPoint para los agentes |
+
+## Contribuir
+
+Todo cambio entra por PR a `main` y lo valida el runner del servidor. Ver [CONTRIBUIR.md](CONTRIBUIR.md).
