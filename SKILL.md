@@ -76,6 +76,26 @@ agente para lo complejo; lo rutinario va a los gratuitos para no gastar la cuota
 5. **Integrar:** `git merge --no-ff agente/<ID>` en la rama base, actualiza el tablero de ESTADO.md y
    `bash $S/scripts/limpiar.sh <ID>`.
 
+## Esperas externas (CI, deploy, servidores)
+
+Nunca esperes algo sin plazo: lo que se espera puede no ocurrir nunca (un disparador `workflow_run` que no se activa,
+un runner ocupado, un deploy que no arranca). Corre la espera en segundo plano con los scripts, que no gastan tokens:
+
+```bash
+bash $S/scripts/esperar-gh.sh <owner/repo> <workflow.yml> <sha> [plazo_aparecer=600] [plazo_total=1800]
+bash $S/scripts/esperar.sh "<qué se espera>" <plazo_seg> <comando de chequeo...>
+```
+
+- `esperar-gh.sh` falla con **3** si la ejecución no aparece (el disparador no funcionó; avisa si el workflow tiene
+  `workflow_dispatch`), con **124** si no termina a tiempo y con **1** si termina en fallo.
+- Tras un merge que debe desplegar: espera el CI **y** el workflow de deploy. Si el deploy no aparece, no lo des por
+  hecho: dile al usuario, lánzalo a mano con `gh workflow run` si está autorizado y deja anotado que el disparador
+  automático falla.
+- Al terminar un deploy, verifica el resultado en el destino (p. ej. `esperar.sh` con un chequeo del commit en el
+  servidor o del HTTP de la app), no solo el verde del workflow.
+- Si una espera ya en curso no va a servir (filtro mal escrito, plazo absurdo), córtala y lanza otra; no confíes en
+  un vigilante que no avisa.
+
 ## Entre tareas
 
 - Al cerrar cada lote: ESTADO.md al día (tablero + siguiente paso concreto) y commit, para que cualquier resumen de

@@ -28,6 +28,10 @@ jobs:
         with:
           fetch-depth: 0
 
+      # Runner self-hosted compartido: una ejecución cortada deja /tmp/gitleaks.tmp y la acción falla.
+      - name: Limpiar descarga previa de Gitleaks
+        run: rm -f /tmp/gitleaks.tmp
+
       - name: Ejecutar Gitleaks
         uses: gitleaks/gitleaks-action@v2
         env:
