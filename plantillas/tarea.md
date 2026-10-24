@@ -25,6 +25,10 @@ prueba pequeña. En el reporte, una línea con lo que omitiste.
 
 - [ ] ...
 
+<!-- Claude: todo comando que pidas aquí o en el Objetivo debe estar en la lista permitida del AGENTS.md del repo
+     (un comando por llamada, sin pipes ni ; &&). git mv/rm y grep NO suelen estarlo: mueve tú los archivos antes
+     de lanzar y pide búsquedas con rg. Un comando prohibido detiene al agente sin hacer nada. -->
+
 ## Verificación (córrela y pega las últimas líneas en el reporte)
 
 ```bash

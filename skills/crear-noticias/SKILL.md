@@ -48,7 +48,7 @@ Si no existe, créalo desde `plantillas/config.md` y pide al usuario lo que falt
 | 2. Elegir | Claude | Descarta duplicados (registro), fuera de ventana y sin interés para el público. Prioriza lo que tiene búsquedas (lanzamientos, fechas, prohibiciones, precios, eventos). 3–5 por lote |
 | 3. Verificar | Agente distinto al del paso 1 | `plantillas/tarea-verificar.md`: abre la fuente oficial de cada dato y pega la frase que lo confirma. Claude revisa la tabla y corta lo no confirmado |
 | 4. Redactar | Agente | `plantillas/tarea-redactar.md`: crea la carpeta de cada noticia con `texto.md` (web), `facebook.md`, `instagram.md`, `tiktok.md`, `fuentes.md`, según `referencias/formatos.md` y `referencias/seo.md` |
-| 5. Portada | Claude o agente | Lo que diga `config.md`: con `disenar-posts` (Figma y componentes de la marca) o la plantilla del proyecto. Mínimo `portada.png`; si hay redes, también 1080×1350 y 1080×1920 |
+| 5. Portada | Claude o agente | Lo que diga `config.md`: con `disenar-posts` (Figma y componentes de la marca) o la plantilla del proyecto. Estándar: `portada.png` (web) + carrusel de 3–5 láminas en 1080×1350 (Instagram/Facebook) y en 1080×1920 (TikTok modo foto), mismo contenido. Mínimo, la portada |
 | 6. Validar | Claude | Lista de abajo, mirando textos y portada. Muestra el lote al usuario y espera su OK |
 | 7. Publicar y registrar | Agente o Claude | Web con el método de `config.md` (simulación primero). Anota cada noticia en el registro con URL, fecha y palabra clave |
 
