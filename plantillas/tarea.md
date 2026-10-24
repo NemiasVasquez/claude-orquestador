@@ -13,6 +13,14 @@
 
 <tipos, firmas, endpoints o esquema que otras tareas usan>
 
+## Mínimo código (Ponytail)
+
+Toma la primera opción que funcione completa: ¿hace falta? → ¿ya existe en el repo? → librería estándar o de la
+plataforma → dependencia ya instalada → una línea clara → el mínimo código. Nada de abstracciones ni opciones no
+pedidas; nunca recortes validación, manejo de errores, seguridad ni accesibilidad. Lógica nueva no trivial deja una
+prueba pequeña. En el reporte, una línea con lo que omitiste.
+<!-- Skill de apoyo (agent-skills), si aplica: <nombre> — ver guias/skills-externas.md -->
+
 ## Criterios de aceptación
 
 - [ ] ...

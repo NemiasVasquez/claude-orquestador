@@ -49,6 +49,9 @@ agente para lo complejo; lo rutinario va a los gratuitos para no gastar la cuota
 - Claude define **antes** los contratos compartidos (tipos, API, esquema) y nunca deja dos tareas en paralelo tocando
   los mismos archivos. Lo delicado (dinero, auth, seguridad, datos personales, migraciones) lo revisa Claude a fondo.
 - Modelo: el más barato que alcance (ORQUESTACION.md § 2). En la tarea puedes sugerir agente y modelo.
+- Ahorro de tokens: si hay `graphify-out/`, úsalo para elegir archivos en vez de leer código; cada tarea lleva la
+  escalera de Ponytail y, si aplica, el nombre de la skill de agent-skills del tipo de tarea
+  ([guias/skills-externas.md](guias/skills-externas.md)).
 
 ## Ciclo por tarea
 
