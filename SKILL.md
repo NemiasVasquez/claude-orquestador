@@ -14,6 +14,8 @@ desde PowerShell `~` no se expande y `bash` puede ser el de WSL) y escribe la ru
 variables no pasan de una llamada a otra. Antes del primer reparto de la sesión corre `bash $S/scripts/agentes.sh`:
 dice qué agentes están instalados, sus modelos y para qué es fuerte cada uno. Si falta alguno, dile al usuario
 el comando de instalación y el login que imprime (no los corras tú: piden cuenta).
+Si imprime `FALTA MCP chrome-devtools`, corre tú ese `claude mcp add` (no pide cuenta). Para pruebas de navegador
+que miden consola, red o rendimiento, los agentes usan el MCP `chrome-devtools`; para recorrer flujos, `playwright`.
 
 ## ¿Tarea en un repo o consulta suelta?
 
