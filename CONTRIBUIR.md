@@ -25,6 +25,10 @@ pide, vuelve a correr `instalar.sh`. Por eso **todo entra por PR** y `main` nunc
 8. Avisa al equipo si hay que correr `instalar.sh` o tocar `~/.config/orquestar-agentes/config` (la plantilla del PR
    lo pregunta). Cada persona: `git switch main && git pull`.
 
+**Actualización automática:** al empezar cada sesión, Claude corre `scripts/actualizar.sh`: hace `git pull` (solo si la
+copia está en `main` y limpia), agrega a Claude Code el MCP `chrome-devtools` si falta y vuelve a correr
+`configurar-agentes.js` para los MCP de los agentes. Un MCP nuevo para todos se agrega ahí y en `configurar-agentes.js`.
+
 Para volver atrás: `git revert` del merge en un PR nuevo, por el mismo flujo.
 
 ## Protección de `main` (una vez, el dueño del repo)

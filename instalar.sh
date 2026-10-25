@@ -5,7 +5,7 @@
 #   bash ~/.claude/skills/orquestar-agentes/instalar.sh [--agentes "opencode gemini-cli qwen codex"] [--sin-programas]
 #
 # Hace: instala los CLI de agentes que falten, las librerías de documentos (Python) y LibreOffice/pandoc,
-# configura en cada CLI los MCP (Playwright, markitdown, Context7), las reglas deny y la skill de documentos,
+# configura en cada CLI los MCP (Playwright, Chrome DevTools, markitdown, Context7), las reglas deny y la skill de documentos,
 # y crea tu config personal. Respalda cada archivo que toca como *.bak-orq. Se puede correr varias veces.
 set -u
 DIR_SKILL=$(cd "$(dirname "$0")" && pwd)
@@ -61,6 +61,11 @@ fi
 
 paso "Configurar los agentes (MCP, reglas deny, skill de documentos)"
 node "$DIR_SKILL/scripts/configurar-agentes.js" "$DIR_SKILL"
+
+paso "MCP de Claude Code (usuario: todos los proyectos)"
+if falta claude; then echo "Falta el CLI claude: instala Claude Code y vuelve a correr."
+elif grep -qs '"chrome-devtools"' "$HOME/.claude.json"; then echo "chrome-devtools ya está."
+else claude mcp add -s user chrome-devtools -- npx -y chrome-devtools-mcp@latest && echo "chrome-devtools agregado."; fi
 
 paso "Config personal"
 CONFIG=$HOME/.config/orquestar-agentes/config

@@ -19,7 +19,8 @@ El instalador hace esto:
 
 - instala los CLI que falten;
 - instala las librerías de documentos y LibreOffice/pandoc;
-- agrega a cada CLI los MCP: Playwright, markitdown y Context7;
+- agrega a cada CLI los MCP: Playwright, Chrome DevTools, markitdown y Context7;
+- agrega a Claude Code (alcance usuario, todos los proyectos) el MCP `chrome-devtools`;
 - agrega las reglas que bloquean push, borrados, publicación y despliegues;
 - instala la skill de documentos;
 - crea tu config personal;

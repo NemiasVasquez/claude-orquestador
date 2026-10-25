@@ -11,9 +11,13 @@ solo la sección que necesites.
 
 `$S` = `~/.claude/skills/orquestar-agentes`. Corre los scripts con la herramienta **Bash** (en Windows es Git Bash;
 desde PowerShell `~` no se expande y `bash` puede ser el de WSL) y escribe la ruta completa en cada llamada: las
-variables no pasan de una llamada a otra. Antes del primer reparto de la sesión corre `bash $S/scripts/agentes.sh`:
+variables no pasan de una llamada a otra. Al empezar la sesión corre `bash $S/scripts/actualizar.sh` (git pull de la
+skill e instala los MCP nuevos; si dice "reinicia Claude Code", avísale al usuario). Luego, antes del primer reparto,
+corre `bash $S/scripts/agentes.sh`:
 dice qué agentes están instalados, sus modelos y para qué es fuerte cada uno. Si falta alguno, dile al usuario
 el comando de instalación y el login que imprime (no los corras tú: piden cuenta).
+Para pruebas de navegador
+que miden consola, red o rendimiento, los agentes usan el MCP `chrome-devtools`; para recorrer flujos, `playwright`.
 
 ## ¿Tarea en un repo o consulta suelta?
 

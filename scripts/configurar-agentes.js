@@ -1,4 +1,4 @@
-// Agrega a cada CLI instalado los MCP (markitdown, playwright, context7), las reglas deny y la skill de documentos.
+// Agrega a cada CLI instalado los MCP (markitdown, playwright, chrome-devtools, context7), las reglas deny y la skill de documentos.
 // Uso: node configurar-agentes.js <dir-skill>   (lo llama instalar.sh; respalda cada archivo como *.bak-orq)
 // No borra nada de lo que ya tengas: solo agrega lo que falta.
 const fs = require("fs"), path = require("path"), os = require("os");
@@ -39,6 +39,8 @@ const MCP = {
   playwright: { command: "npx", args: playwrightArgs },
   markitdown: { command: python, args: ["-m", "markitdown_mcp"] },
   context7: { command: "npx", args: ["-y", "@upstash/context7-mcp"] },
+  // Chrome DevTools: consola, red y rendimiento (Lighthouse/trazas). --isolated: perfil temporal, varios agentes a la vez.
+  "chrome-devtools": { command: "npx", args: ["-y", "chrome-devtools-mcp@latest", "--isolated"] },
 };
 const DENY = ["git push", "git reset --hard", "git clean", "git merge", "git rebase", "git worktree", "rm -rf",
   "npm publish", "pnpm publish", "prisma migrate reset", "--force-reset", "ssh", "scp", "vercel", "gh"];
@@ -69,7 +71,7 @@ if (existe(agyDir)) {
   j.permissions = j.permissions || {}; j.permissions.allow = j.permissions.allow || []; j.permissions.deny = j.permissions.deny || [];
   const add = (lista, r) => lista.includes(r) ? 0 : (lista.push(r), 1);
   let n = 0;
-  for (const r of ["mcp(playwright/*)", "mcp(markitdown/*)", "mcp(context7/*)", ...VERIFICACION.map(c => `command(${c})`)]) n += add(j.permissions.allow, r);
+  for (const r of ["mcp(playwright/*)", "mcp(markitdown/*)", "mcp(chrome-devtools/*)", "mcp(context7/*)", ...VERIFICACION.map(c => `command(${c})`)]) n += add(j.permissions.allow, r);
   for (const c of DENY) n += add(j.permissions.deny, `command(${c})`);
   if (n) { escribir(p, j); hecho.push(`agy: ${n} reglas en ${p}`); }
   skillDocumentos(path.join(HOME, ".gemini", "config", "skills"), "agy");
